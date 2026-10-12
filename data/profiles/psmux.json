@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "psmux",
+  "name": "psmux",
+  "type": "software",
+  "configItems": [
+    {
+      "id": "psmux-config",
+      "name": "psmux config",
+      "kind": "file",
+      "defaultSourcePath": "{UserProfile}/.psmux.conf",
+      "candidateSourcePaths": [
+        "{UserProfile}/.psmux.conf",
+        "{UserProfile}/.psmuxrc",
+        "{UserProfile}/.tmux.conf",
+        "{UserProfile}/.config/psmux/psmux.conf"
+      ],
+      "backupPath": "psmux/psmux.conf",
+      "required": false
+    }
+  ]
+}

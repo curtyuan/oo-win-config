@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "wezterm",
+  "name": "WezTerm",
+  "type": "software",
+  "configItems": [
+    {
+      "id": "wezterm-config",
+      "name": "WezTerm config",
+      "kind": "file",
+      "defaultSourcePath": "{UserProfile}/.wezterm.lua",
+      "candidateSourcePaths": [
+        "{UserProfile}/.wezterm.lua",
+        "{UserProfile}/.config/wezterm/wezterm.lua"
+      ],
+      "backupPath": "wezterm/wezterm.lua",
+      "required": false
+    }
+  ]
+}

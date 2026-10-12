@@ -1,0 +1,157 @@
+<Window x:Class="OoWinConfig.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:OoWinConfig.Views"
+        mc:Ignorable="d"
+        Title="oo-win-config" Height="720" Width="1180" MinHeight="560" MinWidth="960"
+        Background="#0f1319" Foreground="#e8edf7"
+        SourceInitialized="Window_OnSourceInitialized"
+        PreviewKeyDown="Window_OnPreviewKeyDown">
+    <Grid x:Name="ScaledRoot" Margin="12" Background="{StaticResource AppBackgroundBrush}">
+        <Grid.LayoutTransform>
+            <ScaleTransform x:Name="UiScaleTransform" ScaleX="1" ScaleY="1" />
+        </Grid.LayoutTransform>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0" Margin="0,0,0,12">
+            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Margin="0,0,-1,-7" VerticalAlignment="Bottom">
+                <ToggleButton x:Name="BackupNavButton" Content="Backup" MinWidth="92" Margin="0,0,6,0" Style="{StaticResource HeaderTabButtonStyle}" Click="BackupTab_OnClick" />
+                <ToggleButton x:Name="RemoteNavButton" Content="Remote" MinWidth="92" Style="{StaticResource HeaderTabButtonStyle}" Click="RemoteTab_OnClick" />
+            </StackPanel>
+
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Settings" MinWidth="100" Margin="8,0,0,0" Click="Settings_OnClick" />
+            </StackPanel>
+        </DockPanel>
+
+        <Border Grid.Row="1" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrushDark}" BorderThickness="1" Padding="6">
+            <TabControl x:Name="MainTabs" Background="{StaticResource PanelBrush}" BorderThickness="0" SelectionChanged="MainTabs_OnSelectionChanged">
+                <TabControl.ItemContainerStyle>
+                    <Style TargetType="TabItem">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </Style>
+                </TabControl.ItemContainerStyle>
+
+                <TabItem Header="Backup">
+                    <views:BackupView x:Name="BackupView" />
+                </TabItem>
+
+                <TabItem Header="Remote">
+                    <views:RemoteView x:Name="RemoteView" />
+                </TabItem>
+            </TabControl>
+        </Border>
+
+        <TextBlock x:Name="StatusText" Grid.Row="2" Margin="0,12,0,0" Foreground="{StaticResource MutedTextBrush}" />
+
+        <Border x:Name="SettingsOverlay" Grid.RowSpan="3" Visibility="Collapsed" Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderBrushDark}" BorderThickness="1" Padding="18">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row="0" Margin="0,0,0,16">
+                    <StackPanel DockPanel.Dock="Left">
+                        <TextBlock Text="Settings" FontSize="22" FontWeight="SemiBold" />
+                        <TextBlock Text="Application configuration" Foreground="{StaticResource MutedTextBrush}" />
+                    </StackPanel>
+                </DockPanel>
+
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="360" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Header="Interface" Margin="0,0,10,0">
+                        <DockPanel LastChildFill="True">
+                            <Button DockPanel.Dock="Bottom" Content="Close" MinWidth="84" Margin="0,14,0,0" HorizontalAlignment="Left" Click="CloseSettings_OnClick" />
+                            <StackPanel>
+                                <TextBlock Text="UI scale" FontWeight="SemiBold" />
+                                <Slider x:Name="UiScaleSlider" Minimum="0.85" Maximum="1.35" Value="1" TickFrequency="0.05" IsSnapToTickEnabled="True" ValueChanged="UiScaleSlider_OnValueChanged" />
+                                <TextBlock x:Name="UiScaleValueText" Foreground="{StaticResource MutedTextBrush}" />
+
+                                <TextBlock Text="Base font size" FontWeight="SemiBold" Margin="0,8,0,0" />
+                                <Slider x:Name="FontSizeSlider" Minimum="12" Maximum="18" Value="14" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="FontSizeSlider_OnValueChanged" />
+                                <TextBlock x:Name="FontSizeValueText" Foreground="{StaticResource MutedTextBrush}" />
+
+                                <TextBlock Text="Background" FontWeight="SemiBold" Margin="0,8,0,0" />
+                                <ComboBox x:Name="BackgroundThemeComboBox" MinHeight="32" SelectionChanged="BackgroundThemeComboBox_OnSelectionChanged">
+                                    <ComboBoxItem Content="Dark" Tag="dark" IsSelected="True" />
+                                    <ComboBoxItem Content="Light" Tag="light" />
+                                </ComboBox>
+
+                                <Button Content="Reset UI settings" Margin="0,12,0,0" HorizontalAlignment="Left" Click="ResetUiSettings_OnClick" />
+                                <TextBlock Text="Shortcut: Ctrl + , opens settings." Foreground="{StaticResource MutedTextBrush}" Margin="0,16,0,0" />
+                            </StackPanel>
+                        </DockPanel>
+                    </GroupBox>
+
+                    <GroupBox Grid.Column="1" Header="Configuration notes">
+                        <StackPanel>
+                            <TextBlock Text="This panel will manage app-level settings such as startup scope, source path overrides, backup categories, and interface size." TextWrapping="Wrap" />
+                            <TextBlock Text="Settings open as an in-window overlay, not a separate window." Foreground="{StaticResource MutedTextBrush}" Margin="0,10,0,0" TextWrapping="Wrap" />
+
+                            <TextBlock Text="Shortcuts" FontSize="16" FontWeight="SemiBold" Margin="0,20,0,8" />
+                            <Border Background="#111721" BorderBrush="{StaticResource BorderBrushDark}" BorderThickness="1" Padding="12">
+                                <StackPanel>
+                                    <DockPanel Margin="0,0,0,8">
+                                        <TextBlock Text="Open settings" />
+                                        <TextBlock DockPanel.Dock="Right" Text="Ctrl + ," Foreground="{StaticResource MutedTextBrush}" />
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="Toggle snapshot sidebar" />
+                                        <TextBlock DockPanel.Dock="Right" Text="Ctrl + R" Foreground="{StaticResource MutedTextBrush}" />
+                                    </DockPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <Border x:Name="CompareOverlay" Grid.RowSpan="3" Visibility="Collapsed" Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderBrushDark}" BorderThickness="1" Padding="18">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <DockPanel Grid.Row="0" Margin="0,0,0,16">
+                    <StackPanel DockPanel.Dock="Left">
+                        <TextBlock x:Name="CompareOverlayTitle" Text="Compare" FontSize="22" FontWeight="SemiBold" />
+                        <TextBlock Text="Diff preview placeholder" Foreground="{StaticResource MutedTextBrush}" />
+                    </StackPanel>
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                        <Button x:Name="LinkScrollButton" Content="Unlink scroll" MinWidth="112" Margin="0,0,8,0" Click="LinkScroll_OnClick" />
+                        <Button Content="Close" MinWidth="84" Click="CloseCompare_OnClick" />
+                    </StackPanel>
+                </DockPanel>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <GroupBox Header="Left">
+                        <ScrollViewer x:Name="CompareLeftScroll" VerticalScrollBarVisibility="Auto">
+                            <TextBlock Text="Select a stored snapshot to compare. File-level diff will appear here." TextWrapping="Wrap" Foreground="{StaticResource MutedTextBrush}" />
+                        </ScrollViewer>
+                    </GroupBox>
+                    <GroupBox Grid.Column="1" Header="Right" Margin="10,0,0,0">
+                        <ScrollViewer x:Name="CompareRightScroll" VerticalScrollBarVisibility="Auto">
+                            <TextBlock Text="Current config or second snapshot preview will appear here." TextWrapping="Wrap" Foreground="{StaticResource MutedTextBrush}" />
+                        </ScrollViewer>
+                    </GroupBox>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

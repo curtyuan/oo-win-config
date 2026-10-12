@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "yazi",
+  "name": "Yazi",
+  "type": "software",
+  "configItems": [
+    {
+      "id": "main-config",
+      "name": "Main config",
+      "kind": "file",
+      "defaultSourcePath": "{AppData}/yazi/config/yazi.toml",
+      "backupPath": "config/yazi.toml",
+      "required": true
+    },
+    {
+      "id": "keymap",
+      "name": "Keymap",
+      "kind": "file",
+      "defaultSourcePath": "{AppData}/yazi/config/keymap.toml",
+      "backupPath": "config/keymap.toml",
+      "required": true
+    },
+    {
+      "id": "theme",
+      "name": "Theme",
+      "kind": "file",
+      "defaultSourcePath": "{AppData}/yazi/config/theme.toml",
+      "backupPath": "config/theme.toml",
+      "required": false
+    }
+  ]
+}

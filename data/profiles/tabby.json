@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "tabby",
+  "name": "Tabby",
+  "type": "software",
+  "configItems": [
+    {
+      "id": "tabby-config",
+      "name": "Tabby config",
+      "kind": "file",
+      "defaultSourcePath": "{AppData}/tabby/config.yaml",
+      "backupPath": "tabby/config.yaml",
+      "required": true
+    }
+  ]
+}

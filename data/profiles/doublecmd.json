@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "doublecmd",
+  "name": "Double Commander",
+  "type": "software",
+  "configItems": [
+    {
+      "id": "shortcuts",
+      "name": "Keyboard shortcuts",
+      "kind": "file",
+      "defaultSourcePath": "{AppData}/doublecmd/shortcuts.scf",
+      "backupPath": "doublecmd/shortcuts.scf",
+      "required": true,
+      "description": "Double Commander hot keys / keyboard layout settings."
+    }
+  ]
+}

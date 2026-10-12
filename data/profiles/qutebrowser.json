@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "qutebrowser",
+  "name": "qutebrowser",
+  "type": "software",
+  "configItems": [
+    {
+      "id": "qutebrowser-config-dir",
+      "name": "qutebrowser config directory",
+      "kind": "directory",
+      "defaultSourcePath": "{AppData}/qutebrowser/config",
+      "backupPath": "qutebrowser/config",
+      "required": true
+    }
+  ]
+}

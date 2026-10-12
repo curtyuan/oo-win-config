@@ -1,0 +1,65 @@
+<UserControl x:Class="OoWinConfig.Views.SnapshotMapView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Margin="{StaticResource TabContentMargin}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="290" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="260" />
+        </Grid.ColumnDefinitions>
+
+        <GroupBox Header="Profiles" Margin="0,0,10,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBox x:Name="SearchBox" Grid.Row="0" Margin="0,0,0,8" MinHeight="32" TextChanged="SearchBox_OnTextChanged" />
+                <TextBlock Grid.Row="1" Text="Click cards to select profiles." Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,8" />
+                <ListBox x:Name="ProfilesList" Grid.Row="2">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding Id}" Foreground="{StaticResource MutedTextBrush}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Grid.Column="1" Header="Timeline">
+            <Grid>
+                <Border Background="#111721" BorderBrush="{StaticResource BorderBrushDark}" BorderThickness="1" Padding="12">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <TextBlock Text="Snapshot map preview" FontSize="16" FontWeight="SemiBold" />
+                            <TextBlock Text="Selected profile cards appear here as timeline rows. Select exactly two snapshot cards to enable Compare." Foreground="{StaticResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,8,0,14" />
+                            <UniformGrid Columns="3">
+                                <ToggleButton Content="yazi / manual-20261008" Margin="0,0,8,8" Padding="10" Checked="SnapshotCompareCard_OnChanged" Unchecked="SnapshotCompareCard_OnChanged" />
+                                <ToggleButton Content="yazi / batch" Margin="0,0,8,8" Padding="10" Checked="SnapshotCompareCard_OnChanged" Unchecked="SnapshotCompareCard_OnChanged" />
+                                <ToggleButton Content="doublecmd / latest" Margin="0,0,8,8" Padding="10" Checked="SnapshotCompareCard_OnChanged" Unchecked="SnapshotCompareCard_OnChanged" />
+                            </UniformGrid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Grid.Column="2" Header="Tags / Actions" Margin="10,0,0,0">
+            <StackPanel>
+                <TextBlock Text="Tags" FontWeight="SemiBold" />
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,18">
+                    <Button Content="All" MinWidth="56" Margin="0,0,6,0" />
+                    <Button Content="Manual" MinWidth="76" />
+                </StackPanel>
+                <Button Content="Batch" MinWidth="104" HorizontalAlignment="Left" Margin="0,0,0,18" />
+
+                <TextBlock Text="Actions" FontWeight="SemiBold" />
+                <Button x:Name="CompareButton" Content="Compare" IsEnabled="False" Margin="0,8,0,0" Click="Compare_OnClick" />
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</UserControl>

@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>oo-win-config demo</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101318;
+      --panel: #171b22;
+      --panel-2: #1e2430;
+      --line: #303746;
+      --text: #edf2ff;
+      --muted: #9aa7bd;
+      --blue: #6ea8fe;
+      --green: #5dd39e;
+      --yellow: #f7c948;
+      --red: #ff7b72;
+      --shadow: 0 18px 60px rgba(0, 0, 0, .38);
+      font-family: "Segoe UI", "Microsoft JhengHei", system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(110, 168, 254, .18), transparent 36rem),
+        radial-gradient(circle at bottom right, rgba(93, 211, 158, .10), transparent 34rem),
+        var(--bg);
+      color: var(--text);
+    }
+
+    .app {
+      width: min(1440px, calc(100vw - 32px));
+      margin: 24px auto;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      background: rgba(23, 27, 34, .94);
+      box-shadow: var(--shadow);
+    }
+
+    .titlebar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(16, 19, 24, .78);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .logo {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--blue), #8b5cf6);
+      color: #07111f;
+      font-weight: 800;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 17px;
+      letter-spacing: .2px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .path-pill {
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .04);
+      color: #cbd5e1;
+      font-family: Consolas, monospace;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 285px minmax(430px, 1fr) 390px;
+      min-height: 760px;
+    }
+
+    .sidebar,
+    .main,
+    .backups {
+      padding: 18px;
+    }
+
+    .sidebar,
+    .main {
+      border-right: 1px solid var(--line);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      color: #dbe7ff;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .count {
+      color: var(--muted);
+      font-weight: 500;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .search {
+      width: 100%;
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      outline: none;
+      background: #10141b;
+      color: var(--text);
+      font: inherit;
+    }
+
+    .software-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .software-card {
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .035);
+      cursor: pointer;
+    }
+
+    .software-card.active {
+      border-color: rgba(110, 168, 254, .86);
+      background: linear-gradient(135deg, rgba(110, 168, 254, .18), rgba(110, 168, 254, .05));
+    }
+
+    .software-name {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .software-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .installed {
+      background: rgba(93, 211, 158, .14);
+      color: var(--green);
+    }
+
+    .unknown {
+      background: rgba(247, 201, 72, .13);
+      color: var(--yellow);
+    }
+
+    .missing {
+      background: rgba(255, 123, 114, .12);
+      color: var(--red);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .metric {
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .035);
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 7px;
+    }
+
+    .metric-value {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 17px;
+      font-weight: 750;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .032);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(30, 36, 48, .72);
+    }
+
+    .panel-title {
+      font-weight: 750;
+    }
+
+    .panel-note {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(48, 55, 70, .68);
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .check-cell {
+      width: 42px;
+    }
+
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--blue);
+    }
+
+    .mono {
+      color: #cbd5e1;
+      font-family: Consolas, "Cascadia Mono", monospace;
+      font-size: 12px;
+    }
+
+    .dep-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 14px;
+    }
+
+    .chip {
+      padding: 6px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #10141b;
+      color: #dbe7ff;
+      font-size: 12px;
+    }
+
+    .command-box {
+      margin: 0 14px 14px;
+      padding: 12px;
+      border-radius: 12px;
+      background: #0b0f14;
+      color: #c3e88d;
+      font-family: Consolas, "Cascadia Mono", monospace;
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .actions.split {
+      justify-content: space-between;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 11px;
+      padding: 10px 14px;
+      background: var(--panel-2);
+      color: var(--text);
+      font: inherit;
+      font-weight: 700;
+      cursor: default;
+    }
+
+    .primary {
+      background: linear-gradient(135deg, var(--blue), #8b5cf6);
+      color: #07111f;
+    }
+
+    .ghost {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: #dbe7ff;
+    }
+
+    .backup-card {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: rgba(255, 255, 255, .035);
+      margin-bottom: 11px;
+    }
+
+    .backup-card.selected {
+      border-color: rgba(93, 211, 158, .85);
+      background: linear-gradient(135deg, rgba(93, 211, 158, .13), rgba(255, 255, 255, .03));
+    }
+
+    .backup-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 9px;
+      font-weight: 750;
+    }
+
+    .backup-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .mini-label {
+      color: #75839a;
+      display: block;
+      font-size: 11px;
+      margin-bottom: 2px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .version-tag {
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: rgba(110, 168, 254, .12);
+      color: #b8d4ff;
+      font-size: 11px;
+      border: 1px solid rgba(110, 168, 254, .28);
+    }
+
+    .diff-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      padding: 14px;
+    }
+
+    .diff-stat {
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #10141b;
+    }
+
+    .diff-number {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .diff-added {
+      color: var(--green);
+    }
+
+    .diff-modified {
+      color: var(--yellow);
+    }
+
+    .diff-deleted {
+      color: var(--red);
+    }
+
+    .diff-same {
+      color: var(--blue);
+    }
+
+    .preview {
+      margin-top: 14px;
+      padding: 13px;
+      border: 1px dashed #435066;
+      border-radius: 14px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .footer-log {
+      padding: 12px 18px;
+      border-top: 1px solid var(--line);
+      background: #0f1319;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 1120px) {
+      .layout {
+        grid-template-columns: 260px 1fr;
+      }
+
+      .backups {
+        grid-column: 1 / -1;
+        border-top: 1px solid var(--line);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .app {
+        width: 100vw;
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+      }
+
+      .titlebar,
+      .toolbar,
+      .actions,
+      .actions.split {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .layout,
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar,
+      .main {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="titlebar">
+      <div class="brand">
+        <div class="logo">oo</div>
+        <div>
+          <h1>oo-win-config</h1>
+          <div class="subtitle">Portable config backup manager prototype</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <span>Profile data</span>
+        <span class="path-pill">.\data\profiles</span>
+        <span>Backup root</span>
+        <span class="path-pill">.\data\backups</span>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="section-title">
+          <span>Software</span>
+          <span class="count">2 profiles</span>
+        </div>
+        <input class="search" value="" placeholder="Search software">
+        <div class="software-list">
+          <div class="software-card active">
+            <div class="software-name">
+              <span>Yazi</span>
+              <span class="status installed">Installed</span>
+            </div>
+            <div class="software-meta">
+              <span>yazi</span>
+              <span>v25.5.31</span>
+              <span>scoop</span>
+            </div>
+          </div>
+
+          <div class="software-card">
+            <div class="software-name">
+              <span>Double Commander</span>
+              <span class="status unknown">Unknown</span>
+            </div>
+            <div class="software-meta">
+              <span>doublecmd</span>
+              <span>version unknown</span>
+              <span>manual</span>
+            </div>
+          </div>
+
+          <div class="software-card">
+            <div class="software-name">
+              <span>Komorebi Bundle</span>
+              <span class="status unknown">Later</span>
+            </div>
+            <div class="software-meta">
+              <span>komorebi</span>
+              <span>yasb</span>
+              <span>ahk</span>
+            </div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="ghost">Multi-profile view later</button>
+        </div>
+      </aside>
+
+      <main class="main">
+        <div class="summary-grid">
+          <div class="metric">
+            <div class="metric-label">Selected profile</div>
+            <div class="metric-value">yazi</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Detected version</div>
+            <div class="metric-value">25.5.31</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Config items</div>
+            <div class="metric-value">3</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">View mode</div>
+            <div class="metric-value">One app</div>
+          </div>
+        </div>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">Single software profile preview</div>
+              <div class="panel-note">Paths are different per software, so this view only shows .\data\profiles\yazi.json</div>
+            </div>
+            <span class="status installed">Ready</span>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th class="check-cell"></th>
+                <th>Item</th>
+                <th>Source path</th>
+                <th>Status</th>
+                <th>Size</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="check-cell"><input type="checkbox" checked></td>
+                <td>Main config</td>
+                <td class="mono">%APPDATA%\yazi\config\yazi.toml</td>
+                <td><span class="status installed">Found</span></td>
+                <td>5 KB</td>
+              </tr>
+              <tr>
+                <td class="check-cell"><input type="checkbox" checked></td>
+                <td>Keymap</td>
+                <td class="mono">%APPDATA%\yazi\config\keymap.toml</td>
+                <td><span class="status installed">Found</span></td>
+                <td>9 KB</td>
+              </tr>
+              <tr>
+                <td class="check-cell"><input type="checkbox" checked></td>
+                <td>Theme</td>
+                <td class="mono">%APPDATA%\yazi\config\theme.toml</td>
+                <td><span class="status installed">Found</span></td>
+                <td>3 KB</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">Diff preview against selected Yazi backup</div>
+              <div class="panel-note">Compares current Yazi config files with one selected Yazi backup. It does not compare different software.</div>
+            </div>
+            <button class="ghost">Run diff</button>
+          </div>
+          <div class="diff-grid">
+            <div class="diff-stat"><span class="diff-number diff-added">0</span><span class="mini-label">Added files</span></div>
+            <div class="diff-stat"><span class="diff-number diff-modified">1</span><span class="mini-label">Modified files</span></div>
+            <div class="diff-stat"><span class="diff-number diff-deleted">0</span><span class="mini-label">Deleted files</span></div>
+            <div class="diff-stat"><span class="diff-number diff-same">2</span><span class="mini-label">Unchanged files</span></div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Change</th>
+                <th>Relative file</th>
+                <th>Current</th>
+                <th>Backup</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="status unknown">Modified</span></td>
+                <td class="mono">config\keymap.toml</td>
+                <td>9 KB / 2026-10-08</td>
+                <td>8 KB / 2026-10-07</td>
+              </tr>
+              <tr>
+                <td><span class="status installed">Same</span></td>
+                <td class="mono">config\yazi.toml</td>
+                <td>5 KB / 2026-10-08</td>
+                <td>5 KB / 2026-10-07</td>
+              </tr>
+              <tr>
+                <td><span class="status installed">Same</span></td>
+                <td class="mono">config\theme.toml</td>
+                <td>3 KB / 2026-10-08</td>
+                <td>3 KB / 2026-10-07</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">Dependencies and install hints</div>
+              <div class="panel-note">Hints only. Missing dependencies do not block backup.</div>
+            </div>
+          </div>
+          <div class="dep-list">
+            <span class="chip">yazi installed</span>
+            <span class="chip">ffmpeg optional</span>
+            <span class="chip">7zip optional</span>
+            <span class="chip">jq optional</span>
+            <span class="chip">poppler optional</span>
+          </div>
+          <div class="command-box">winget install sxyazi.yazi<br>winget install Gyan.FFmpeg 7zip.7zip jqlang.jq oschwartz10612.Poppler</div>
+        </section>
+
+        <div class="actions split">
+          <div class="button-row">
+            <button class="primary">Backup selected items</button>
+            <button class="ghost">Restore from selected backup</button>
+            <button class="ghost">Open profile JSON</button>
+          </div>
+          <div class="button-row">
+            <button class="ghost">Compare multiple software later</button>
+          </div>
+        </div>
+      </main>
+
+      <aside class="backups">
+        <div class="section-title">
+          <span>Visible backups</span>
+          <span class="count">sorted by date</span>
+        </div>
+
+        <div class="backup-card selected">
+          <div class="backup-head">
+            <span>yazi / 2026-10-07 21:18</span>
+            <span class="status installed">Selected</span>
+          </div>
+          <div class="backup-meta">
+            <div><span class="mini-label">Size</span>17 KB</div>
+            <div><span class="mini-label">Files</span>3</div>
+            <div><span class="mini-label">Created</span>2026-10-07</div>
+            <div><span class="mini-label">Profile</span>yazi.json</div>
+          </div>
+          <div class="tag-row">
+            <span class="version-tag">backup: yazi-keymap-before-change</span>
+            <span class="version-tag">app: 25.5.31</span>
+            <span class="version-tag">profile schema: v1</span>
+          </div>
+        </div>
+
+        <div class="backup-card">
+          <div class="backup-head">
+            <span>doublecmd / 2026-10-07 20:54</span>
+            <span class="status installed">Available</span>
+          </div>
+          <div class="backup-meta">
+            <div><span class="mini-label">Size</span>6 KB</div>
+            <div><span class="mini-label">Files</span>1</div>
+            <div><span class="mini-label">Created</span>2026-10-07</div>
+            <div><span class="mini-label">Profile</span>doublecmd.json</div>
+          </div>
+          <div class="tag-row">
+            <span class="version-tag">backup: hotkeys-stable</span>
+            <span class="version-tag">app: unknown</span>
+          </div>
+        </div>
+
+        <div class="backup-card">
+          <div class="backup-head">
+            <span>yazi / 2026-10-03 10:11</span>
+            <span class="status unknown">Older</span>
+          </div>
+          <div class="backup-meta">
+            <div><span class="mini-label">Size</span>15 KB</div>
+            <div><span class="mini-label">Files</span>3</div>
+            <div><span class="mini-label">Created</span>2026-10-03</div>
+            <div><span class="mini-label">Profile</span>yazi.json</div>
+          </div>
+          <div class="tag-row">
+            <span class="version-tag">backup: yazi-clean-config</span>
+            <span class="version-tag">app: 25.5.31</span>
+          </div>
+        </div>
+
+        <div class="preview">
+          <strong>Selected backup preview</strong><br>
+          .\data\backups\yazi\20261007-2118\<br>
+          Label and version metadata live beside copied files. Restores to %APPDATA%\yazi\config. Existing files should trigger an overwrite policy dialog.
+        </div>
+      </aside>
+    </div>
+
+    <footer class="footer-log">
+      Last scan: found 2 software profiles, 3 backup snapshots, 1 missing optional file. Detection failures are warnings only.
+    </footer>
+  </div>
+</body>
+</html>

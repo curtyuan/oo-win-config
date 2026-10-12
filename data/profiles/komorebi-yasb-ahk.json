@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "id": "komorebi-yasb-ahk",
+  "name": "Komorebi + Yasb + AHK",
+  "type": "bundle",
+  "configItems": [
+    {
+      "id": "komorebi-config",
+      "name": "Komorebi config",
+      "kind": "file",
+      "defaultSourcePath": "{UserProfile}/komorebi.json",
+      "backupPath": "komorebi/komorebi.json",
+      "required": true
+    },
+    {
+      "id": "yasb-config",
+      "name": "Yasb config",
+      "kind": "file",
+      "defaultSourcePath": "{UserProfile}/.config/yasb/config.yaml",
+      "backupPath": "yasb/config.yaml",
+      "required": true
+    },
+    {
+      "id": "yasb-styles",
+      "name": "Yasb styles",
+      "kind": "file",
+      "defaultSourcePath": "{UserProfile}/.config/yasb/styles.css",
+      "backupPath": "yasb/styles.css",
+      "required": true
+    },
+    {
+      "id": "komorebi-ahk",
+      "name": "Komorebi AHK script",
+      "kind": "file",
+      "defaultSourcePath": "{UserProfile}/komorebi.ahk",
+      "backupPath": "ahk/komorebi.ahk",
+      "required": true
+    }
+  ]
+}
