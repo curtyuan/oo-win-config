@@ -4,6 +4,7 @@ obj/
 **/obj/
 
 dist/oo-win-config/
+dist/*.zip
 artifacts/
 
 data/backups/
