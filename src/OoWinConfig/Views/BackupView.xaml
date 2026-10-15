@@ -70,10 +70,10 @@
         <GroupBox Grid.Column="0" Margin="0,0,10,0">
             <GroupBox.Header>
                 <DockPanel LastChildFill="False">
-                    <TextBlock x:Name="ProfilesHeaderText" Text="Softwares" VerticalAlignment="Center" />
-                    <StackPanel x:Name="ProfileBulkActionsPanel" DockPanel.Dock="Right" Orientation="Horizontal" Margin="108,0,0,0">
-                        <Button Content="All" ToolTip="Select all softwares" MinWidth="42" Height="24" Padding="6,0" Margin="0,0,4,0" Click="SelectAll_OnClick" />
-                        <Button Content="Clear" ToolTip="Clear software selection" MinWidth="64" Height="24" Padding="8,0" Click="ClearAll_OnClick" />
+                    <TextBlock x:Name="ProfilesHeaderText" Text="Profiles" VerticalAlignment="Center" />
+                    <StackPanel x:Name="ProfileBulkActionsPanel" DockPanel.Dock="Right" Orientation="Horizontal" Margin="72,0,0,0">
+                        <Button Content="Batch all" ToolTip="Check all profiles for batch backup" MinWidth="72" Height="24" Padding="6,0" Margin="0,0,4,0" Click="SelectAll_OnClick" />
+                        <Button Content="Clear" ToolTip="Clear checked profiles" MinWidth="64" Height="24" Padding="8,0" Click="ClearAll_OnClick" />
                     </StackPanel>
                 </DockPanel>
             </GroupBox.Header>
@@ -142,7 +142,7 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <Button x:Name="BackupProfilesButton" Grid.Row="1" Content="Backup profiles" Margin="0,10,0,0" IsEnabled="False" Click="BackupProfiles_OnClick" />
+                <Button x:Name="BackupProfilesButton" Grid.Row="1" Content="Backup checked profiles" Margin="0,10,0,0" IsEnabled="False" Click="BackupProfiles_OnClick" />
             </Grid>
         </GroupBox>
 

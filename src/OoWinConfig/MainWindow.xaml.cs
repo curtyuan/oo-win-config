@@ -32,6 +32,7 @@ public partial class MainWindow : Window
         _uiSettingsService = new UiSettingsService(_dataDirectory);
         _screenshotService = new ScreenshotService(_dataDirectory);
         InitializeComponent();
+        SshConfigView.Initialize(_dataDirectory);
         WireViewEvents();
         LoadUiSettings();
         LoadProfiles();
@@ -51,6 +52,8 @@ public partial class MainWindow : Window
         BackupView.DeleteSnapshotsRequested += DeleteSnapshots_OnRequested;
         BackupView.SetSnapshotProvider(softwareId => _backupService.LoadBackups(softwareId));
         BackupView.SetTrashSnapshotProvider((scope, softwareId) => _trashService.LoadTrash(scope, softwareId));
+        RemoteView.OpenSshConfigRequested += (_, _) => SelectSshConfigTab();
+        SshConfigView.StatusChanged += (_, message) => StatusText.Text = message;
     }
 
     private void DeleteSnapshots_OnRequested(IReadOnlyList<string> manifestPaths)
@@ -87,6 +90,7 @@ public partial class MainWindow : Window
         }
 
         var profile = row.Profile;
+        BackupView.SetSelectedProfileHeader(profile.Name);
         BackupView.ConfigItemsList.ItemsSource = profile.ConfigItems
             .Select(item => new ConfigItemRow(profile.Id, item, _pathTokenResolver, _sourcePathOverrideService))
             .ToList();
@@ -246,6 +250,17 @@ public partial class MainWindow : Window
         SyncHeaderTabs();
     }
 
+    private void SshConfigTab_OnClick(object sender, RoutedEventArgs e)
+    {
+        SelectSshConfigTab();
+    }
+
+    private void SelectSshConfigTab()
+    {
+        MainTabs.SelectedIndex = 2;
+        SyncHeaderTabs();
+    }
+
     private void MainTabs_OnSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
     {
         SyncHeaderTabs();
@@ -260,6 +275,7 @@ public partial class MainWindow : Window
 
         BackupNavButton.IsChecked = MainTabs.SelectedIndex == 0;
         RemoteNavButton.IsChecked = MainTabs.SelectedIndex == 1;
+        SshConfigNavButton.IsChecked = MainTabs.SelectedIndex == 2;
     }
 
     private void CompareToStoredConfig_OnClick(object sender, RoutedEventArgs e)
@@ -374,6 +390,23 @@ public partial class MainWindow : Window
             MainTabs.SelectedIndex = 0;
             BackupView.ShowSnapshotMapMode();
             SyncHeaderTabs();
+        }
+
+        if (string.Equals(viewName, "ssh-config", StringComparison.OrdinalIgnoreCase))
+        {
+            MainTabs.SelectedIndex = 2;
+            SyncHeaderTabs();
+        }
+
+        if (string.Equals(viewName, "remote", StringComparison.OrdinalIgnoreCase))
+        {
+            MainTabs.SelectedIndex = 1;
+            SyncHeaderTabs();
+        }
+
+        if (string.Equals(viewName, "settings", StringComparison.OrdinalIgnoreCase))
+        {
+            OpenSettingsOverlay();
         }
     }
 

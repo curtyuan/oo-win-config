@@ -1,163 +1,56 @@
 <UserControl x:Class="OoWinConfig.Views.RemoteView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Grid x:Name="RemoteRoot" Margin="{StaticResource TabContentMargin}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition x:Name="SshColumn" Width="300" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+    <Grid Margin="{StaticResource TabContentMargin}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-        <GroupBox x:Name="SshConfigPanel" Header="SSH config" Margin="0,0,10,0">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Row="0" Text="Read targets from local SSH config." Foreground="{StaticResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,0,0,8" />
-
-                <Button Grid.Row="1" Content="New remote" MinHeight="58" Margin="0,0,0,8" Click="NewRemote_OnClick" />
-
-                <ListBox Grid.Row="2">
-                    <ListBoxItem>
-                        <StackPanel>
-                            <TextBlock Text="~/.ssh/config" FontWeight="SemiBold" />
-                            <TextBlock Text="Local SSH config source" Foreground="{StaticResource MutedTextBrush}" />
-                        </StackPanel>
-                    </ListBoxItem>
-                    <ListBoxItem IsSelected="True">
-                        <StackPanel>
-                            <TextBlock Text="kali-dev" FontWeight="SemiBold" />
-                            <TextBlock Text="Linux / Kali / SSH" Foreground="{StaticResource MutedTextBrush}" />
-                        </StackPanel>
-                    </ListBoxItem>
-                    <ListBoxItem>
-                        <StackPanel>
-                            <TextBlock Text="windows-lab" FontWeight="SemiBold" />
-                            <TextBlock Text="Windows / SSH" Foreground="{StaticResource MutedTextBrush}" />
-                        </StackPanel>
-                    </ListBoxItem>
-                </ListBox>
-
-                <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,10,0,0">
-                    <Button Content="Reload SSH config" MinWidth="130" Margin="0,0,8,0" />
-                    <Button Content="Test SSH" MinWidth="90" Click="TestSsh_OnClick" />
+        <Border Grid.Row="0" Background="{StaticResource PanelAltBrush}" BorderBrush="{StaticResource BorderBrushDark}" BorderThickness="1" Padding="16" Margin="0,0,0,10">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Left">
+                    <TextBlock Text="Remote profile management" FontSize="22" FontWeight="SemiBold" />
+                    <TextBlock Text="Future workflow for collecting and restoring software profile files through SSH. SSH settings are managed in the SSH Config tab." Foreground="{StaticResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,4,0,0" />
                 </StackPanel>
-            </Grid>
-        </GroupBox>
-
-        <GroupBox x:Name="RemoteCollectionPanel" Grid.Column="1" Header="Remote collection">
-            <Grid>
-                <StackPanel x:Name="RemoteDisconnectedPanel">
-                    <TextBlock Text="Connect to a remote target first." FontWeight="SemiBold" />
-                    <TextBlock Text="After SSH succeeds, this area becomes a Backup-like collection page for that remote machine." Foreground="{StaticResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,8,0,0" />
-                    <TextBlock x:Name="SshStatusText" Text="Not connected." TextWrapping="Wrap" Foreground="{StaticResource MutedTextBrush}" Margin="0,18,0,0" />
-                </StackPanel>
-
-                <Grid x:Name="RemoteConnectedPanel" Visibility="Collapsed">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="290" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <GroupBox Header="Remote profiles" Margin="0,0,10,0">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <ListBox>
-                                <ListBoxItem IsSelected="True">
-                                    <StackPanel>
-                                        <TextBlock Text="Kali shell config" FontSize="16" FontWeight="SemiBold" />
-                                        <TextBlock Text="3 config items" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
-                                    </StackPanel>
-                                </ListBoxItem>
-                                <ListBoxItem>
-                                    <StackPanel>
-                                        <TextBlock Text="Linux Neovim" FontSize="16" FontWeight="SemiBold" />
-                                        <TextBlock Text="~/.config/nvim" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
-                                    </StackPanel>
-                                </ListBoxItem>
-                                <ListBoxItem>
-                                    <StackPanel>
-                                        <TextBlock Text="Windows remote config" FontSize="16" FontWeight="SemiBold" />
-                                        <TextBlock Text="Profile-driven Windows SSH" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
-                                    </StackPanel>
-                                </ListBoxItem>
-                            </ListBox>
-                            <Button Grid.Row="1" Content="Collect profiles" Margin="0,10,0,0" />
-                        </Grid>
-                    </GroupBox>
-
-                    <GroupBox Grid.Column="1" Header="Selected remote profile config items">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <TextBlock x:Name="RemoteConnectedStatusText" Text="Connected to kali-dev. Remote profiles loaded." Foreground="{StaticResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,0,0,10" />
-
-                            <ListBox Grid.Row="1">
-                                <ListBoxItem>
-                                    <StackPanel>
-                                        <TextBlock Text="~/.zshrc" FontWeight="SemiBold" />
-                                        <TextBlock Text="Found / shell startup config" Foreground="{StaticResource MutedTextBrush}" />
-                                    </StackPanel>
-                                </ListBoxItem>
-                                <ListBoxItem>
-                                    <StackPanel>
-                                        <TextBlock Text="~/.bashrc" FontWeight="SemiBold" />
-                                        <TextBlock Text="Found / shell startup config" Foreground="{StaticResource MutedTextBrush}" />
-                                    </StackPanel>
-                                </ListBoxItem>
-                                <ListBoxItem>
-                                    <StackPanel>
-                                        <TextBlock Text="~/.config/starship.toml" FontWeight="SemiBold" />
-                                        <TextBlock Text="Optional / prompt config" Foreground="{StaticResource MutedTextBrush}" />
-                                    </StackPanel>
-                                </ListBoxItem>
-                            </ListBox>
-
-                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,10,0,0">
-                                <Button Content="Collect selected" MinWidth="130" Margin="0,0,8,0" />
-                                <Button Content="Create setup package" MinWidth="160" />
-                            </StackPanel>
-                        </Grid>
-                    </GroupBox>
-                </Grid>
-            </Grid>
-        </GroupBox>
-
-        <Border x:Name="NewRemoteOverlay" Grid.ColumnSpan="2" Visibility="Collapsed" Background="#CC0F1319" BorderBrush="{StaticResource BorderBrushDark}" BorderThickness="1" Padding="18">
-            <Grid MaxWidth="520" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{StaticResource PanelBrush}">
-                <Border BorderBrush="{StaticResource BorderBrushDark}" BorderThickness="1" Padding="18">
-                    <StackPanel>
-                        <DockPanel Margin="0,0,0,14">
-                            <StackPanel DockPanel.Dock="Left">
-                                <TextBlock Text="New remote" FontSize="22" FontWeight="SemiBold" />
-                                <TextBlock Text="Connection settings for a new SSH target." Foreground="{StaticResource MutedTextBrush}" />
-                            </StackPanel>
-                            <Button DockPanel.Dock="Right" Content="Close" MinWidth="84" Click="CloseNewRemote_OnClick" />
-                        </DockPanel>
-
-                        <TextBlock Text="Host" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,4" />
-                        <TextBox MinHeight="32" />
-                        <TextBlock Text="User" Foreground="{StaticResource MutedTextBrush}" Margin="0,10,0,4" />
-                        <TextBox MinHeight="32" />
-                        <TextBlock Text="Key file" Foreground="{StaticResource MutedTextBrush}" Margin="0,10,0,4" />
-                        <TextBox MinHeight="32" />
-
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
-                            <Button Content="Save target" MinWidth="110" Margin="0,0,8,0" Click="CloseNewRemote_OnClick" />
-                            <Button Content="Test SSH" MinWidth="90" Click="TestSsh_OnClick" />
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-            </Grid>
+                <Button DockPanel.Dock="Right" Content="Open SSH Config" MinWidth="140" Margin="14,0,0,0" Click="OpenSshConfig_OnClick" />
+            </DockPanel>
         </Border>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <GroupBox Header="1. SSH host source" Margin="0,0,10,0">
+                <StackPanel>
+                    <TextBlock Text="Use SSH Host cards as endpoints." FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <TextBlock Text="Remote workflows should reference a Host card from SSH Config instead of editing host/user/key settings here." Foreground="{StaticResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,8,0,0" />
+                    <Button Content="Manage SSH hosts" HorizontalAlignment="Left" Margin="0,16,0,0" Click="OpenSshConfig_OnClick" />
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Grid.Column="1" Header="2. Connect endpoint" Margin="0,0,10,0">
+                <StackPanel>
+                    <TextBlock Text="Connection flow planned." FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <TextBlock Text="Later this tab can pick an SSH Host card, test the connection, and identify the remote OS before profile collection starts." Foreground="{StaticResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,8,0,0" />
+                    <Border Background="#111721" BorderBrush="{StaticResource BorderBrushDark}" BorderThickness="1" Padding="10" Margin="0,16,0,0">
+                        <TextBlock Text="No live remote session in this tab yet." Foreground="{StaticResource MutedTextBrush}" TextWrapping="Wrap" />
+                    </Border>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Grid.Column="2" Header="3. Collect and restore profiles">
+                <StackPanel>
+                    <TextBlock Text="Profile actions stay separate from SSH settings." FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <TextBlock Text="This future workspace will show remote software profiles, config items, baseline snapshots, collect, and restore actions." Foreground="{StaticResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,8,0,0" />
+                    <Border Background="#111721" BorderBrush="{StaticResource BorderBrushDark}" BorderThickness="1" Padding="10" Margin="0,16,0,0">
+                        <TextBlock Text="Not implemented yet." Foreground="{StaticResource MutedTextBrush}" />
+                    </Border>
+                </StackPanel>
+            </GroupBox>
+        </Grid>
     </Grid>
 </UserControl>

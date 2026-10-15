@@ -23,7 +23,8 @@
         <DockPanel Grid.Row="0" Margin="0,0,0,12">
             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Margin="0,0,-1,-7" VerticalAlignment="Bottom">
                 <ToggleButton x:Name="BackupNavButton" Content="Backup" MinWidth="92" Margin="0,0,6,0" Style="{StaticResource HeaderTabButtonStyle}" Click="BackupTab_OnClick" />
-                <ToggleButton x:Name="RemoteNavButton" Content="Remote" MinWidth="92" Style="{StaticResource HeaderTabButtonStyle}" Click="RemoteTab_OnClick" />
+                <ToggleButton x:Name="RemoteNavButton" Content="Remote" MinWidth="92" Margin="0,0,6,0" Style="{StaticResource HeaderTabButtonStyle}" Click="RemoteTab_OnClick" />
+                <ToggleButton x:Name="SshConfigNavButton" Content="SSH Config" MinWidth="112" Style="{StaticResource HeaderTabButtonStyle}" Click="SshConfigTab_OnClick" ToolTip="Manage SSH config files only: choose a config source, edit Host cards, and save changes back to that file." />
             </StackPanel>
 
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
@@ -46,6 +47,10 @@
                 <TabItem Header="Remote">
                     <views:RemoteView x:Name="RemoteView" />
                 </TabItem>
+
+                <TabItem Header="SSH Config">
+                    <views:SshConfigView x:Name="SshConfigView" />
+                </TabItem>
             </TabControl>
         </Border>
 
@@ -58,11 +63,12 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <DockPanel Grid.Row="0" Margin="0,0,0,16">
+                <DockPanel Grid.Row="0" Margin="0,0,0,16" LastChildFill="False">
                     <StackPanel DockPanel.Dock="Left">
                         <TextBlock Text="Settings" FontSize="22" FontWeight="SemiBold" />
-                        <TextBlock Text="Application configuration" Foreground="{StaticResource MutedTextBrush}" />
+                        <TextBlock Text="Interface preferences and shortcuts" Foreground="{StaticResource MutedTextBrush}" />
                     </StackPanel>
+                    <Button DockPanel.Dock="Right" Content="Close" MinWidth="84" Click="CloseSettings_OnClick" />
                 </DockPanel>
 
                 <Grid Grid.Row="1">
@@ -73,7 +79,6 @@
 
                     <GroupBox Header="Interface" Margin="0,0,10,0">
                         <DockPanel LastChildFill="True">
-                            <Button DockPanel.Dock="Bottom" Content="Close" MinWidth="84" Margin="0,14,0,0" HorizontalAlignment="Left" Click="CloseSettings_OnClick" />
                             <StackPanel>
                                 <TextBlock Text="UI scale" FontWeight="SemiBold" />
                                 <Slider x:Name="UiScaleSlider" Minimum="0.85" Maximum="1.35" Value="1" TickFrequency="0.05" IsSnapToTickEnabled="True" ValueChanged="UiScaleSlider_OnValueChanged" />
@@ -83,34 +88,46 @@
                                 <Slider x:Name="FontSizeSlider" Minimum="12" Maximum="18" Value="14" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="FontSizeSlider_OnValueChanged" />
                                 <TextBlock x:Name="FontSizeValueText" Foreground="{StaticResource MutedTextBrush}" />
 
-                                <TextBlock Text="Background" FontWeight="SemiBold" Margin="0,8,0,0" />
+                                <TextBlock Text="Theme" FontWeight="SemiBold" Margin="0,8,0,0" />
                                 <ComboBox x:Name="BackgroundThemeComboBox" MinHeight="32" SelectionChanged="BackgroundThemeComboBox_OnSelectionChanged">
                                     <ComboBoxItem Content="Dark" Tag="dark" IsSelected="True" />
                                     <ComboBoxItem Content="Light" Tag="light" />
                                 </ComboBox>
 
                                 <Button Content="Reset UI settings" Margin="0,12,0,0" HorizontalAlignment="Left" Click="ResetUiSettings_OnClick" />
-                                <TextBlock Text="Shortcut: Ctrl + , opens settings." Foreground="{StaticResource MutedTextBrush}" Margin="0,16,0,0" />
                             </StackPanel>
                         </DockPanel>
                     </GroupBox>
 
-                    <GroupBox Grid.Column="1" Header="Configuration notes">
+                    <GroupBox Grid.Column="1" Header="Shortcuts and safety">
                         <StackPanel>
-                            <TextBlock Text="This panel will manage app-level settings such as startup scope, source path overrides, backup categories, and interface size." TextWrapping="Wrap" />
-                            <TextBlock Text="Settings open as an in-window overlay, not a separate window." Foreground="{StaticResource MutedTextBrush}" Margin="0,10,0,0" TextWrapping="Wrap" />
-
-                            <TextBlock Text="Shortcuts" FontSize="16" FontWeight="SemiBold" Margin="0,20,0,8" />
+                            <TextBlock Text="Shortcuts" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,8" />
                             <Border Background="#111721" BorderBrush="{StaticResource BorderBrushDark}" BorderThickness="1" Padding="12">
                                 <StackPanel>
-                                    <DockPanel Margin="0,0,0,8">
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
                                         <TextBlock Text="Open settings" />
-                                        <TextBlock DockPanel.Dock="Right" Text="Ctrl + ," Foreground="{StaticResource MutedTextBrush}" />
-                                    </DockPanel>
-                                    <DockPanel>
+                                        <TextBlock Grid.Column="1" Text="Ctrl + ," Foreground="{StaticResource MutedTextBrush}" />
+                                    </Grid>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
                                         <TextBlock Text="Toggle snapshot sidebar" />
-                                        <TextBlock DockPanel.Dock="Right" Text="Ctrl + R" Foreground="{StaticResource MutedTextBrush}" />
-                                    </DockPanel>
+                                        <TextBlock Grid.Column="1" Text="Ctrl + R" Foreground="{StaticResource MutedTextBrush}" />
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <TextBlock Text="Safety" FontSize="16" FontWeight="SemiBold" Margin="0,20,0,8" />
+                            <Border Background="#111721" BorderBrush="{StaticResource BorderBrushDark}" BorderThickness="1" Padding="12">
+                                <StackPanel>
+                                    <TextBlock Text="SSH Config saves create a .oo-win-config.bak file beside the selected config." TextWrapping="Wrap" />
+                                    <TextBlock Text="Backup restore actions ask before replacing current config files." Foreground="{StaticResource MutedTextBrush}" Margin="0,8,0,0" TextWrapping="Wrap" />
                                 </StackPanel>
                             </Border>
                         </StackPanel>

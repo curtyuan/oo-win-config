@@ -18,6 +18,8 @@
 - 還原前會詢問是否先把目前設定再備份一次。
 - 如果完全沒有可用備份，會提示先建立一份 `manual` backup。
 - 右鍵 snapshot card 可以用 Explorer 開啟對應資料夾。
+- 在獨立的 `SSH Config` tab 管理 SSH config source 和 `Host` blocks。
+- SSH config 支援多個檔案來源、Host card 編輯、新增/複製/延後刪除，以及寫回前建立備份。
 
 ## 介面
 
@@ -28,6 +30,8 @@ Backup 頁是主要工作區。左側是軟體 profile，右側是選中 profile
 Snapshot map 用時間線看同一個 profile 的備份版本。右側 sidebar 放 actions 和 filter。
 
 ![Snapshot map](doc/assets/readme/snapshot-map.png)
+
+`SSH Config` tab 獨立管理 SSH 設定檔；remote profile backup 和遠端檔案操作不在這個 tab。
 
 ## 資料結構
 
@@ -192,7 +196,8 @@ src/OoWinConfig/bin/Debug/net8.0-windows/data/debug/screenshots/
 
 ## 還沒完成的部分
 
-- Remote 頁目前還是 UI 骨架，尚未真的接 SSH。
+- Remote profile management 尚未實作；Remote 頁目前提供規劃中的流程和 SSH Config 導向。
+- SSH Config 尚未支援自動展開 `Include` 檔案，included files 需另外加入為 config source。
 - Snapshot map 已讀實際 backup manifest，但比較內容仍是 placeholder overlay。
 - Theme 設定目前有入口，還沒整理成完整可切換的 theme resource 系統。
 - Trash 目前有 general / remote scope，但 remote scope 尚未接真遠端資料來源。

@@ -207,6 +207,14 @@ public partial class BackupView : UserControl
         SetSnapshotMapMode(true, trashMode: false);
     }
 
+    public void SetSelectedProfileHeader(string profileName)
+    {
+        if (!_isSnapshotMapMode)
+        {
+            ConfigHeaderText.Text = $"{profileName} config items";
+        }
+    }
+
     private void SetSnapshotMapMode(bool enabled, bool trashMode)
     {
         _isSnapshotMapMode = enabled;
@@ -219,7 +227,7 @@ public partial class BackupView : UserControl
         SnapshotSidebarCollapsedToggleButton.Visibility = _isSnapshotMapMode && !_isSnapshotSidebarVisible ? Visibility.Visible : Visibility.Collapsed;
         BackupProfilesButton.Visibility = _isSnapshotMapMode ? Visibility.Collapsed : Visibility.Visible;
         ProfileBulkActionsPanel.Visibility = Visibility.Visible;
-        ProfilesHeaderText.Text = _isSnapshotMapMode ? "Profiles" : "Softwares";
+        ProfilesHeaderText.Text = "Profiles";
         UpdateModeHeader();
 
         foreach (var row in GetProfileRows())
@@ -250,7 +258,7 @@ public partial class BackupView : UserControl
         {
             SnapshotMapModeButton.Content = "Snapshot map";
             TrashMapModeButton.Content = "Trash";
-            ConfigHeaderText.Text = "Selected profile config items";
+            ConfigHeaderText.Text = "Profile config items";
             return;
         }
 

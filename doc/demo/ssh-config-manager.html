@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>oo-win-config SSH Config Tab Demo</title>
+  <style>
+    :root {
+      --bg: #08100e;
+      --panel: #111a18;
+      --panel-2: #17231f;
+      --line: #293b35;
+      --line-strong: #4b6f61;
+      --text: #e8f5f0;
+      --muted: #91a79f;
+      --green: #76d49b;
+      --amber: #e3bd65;
+      --red: #e17d7d;
+      --blue: #83baff;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(118, 212, 155, 0.15), transparent 34rem),
+        linear-gradient(135deg, #07100d 0%, #0b1311 52%, #11100b 100%);
+    }
+
+    .app {
+      width: min(1440px, calc(100vw - 40px));
+      margin: 24px auto;
+      border: 1px solid rgba(118, 212, 155, 0.22);
+      border-radius: 28px;
+      overflow: hidden;
+      background: rgba(11, 18, 16, 0.92);
+      box-shadow: 0 24px 90px rgba(0, 0, 0, 0.36);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(10, 17, 15, 0.96);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 700;
+    }
+
+    .mark {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(118, 212, 155, 0.48);
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(118, 212, 155, 0.32), rgba(118, 212, 155, 0.05));
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      padding: 8px 14px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+    }
+
+    .tab.active {
+      color: var(--text);
+      border-color: rgba(118, 212, 155, 0.38);
+      background: rgba(118, 212, 155, 0.08);
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      min-height: 760px;
+    }
+
+    .main {
+      padding: 18px;
+    }
+
+    .editor {
+      border-left: 1px solid var(--line);
+      padding: 18px;
+      background: rgba(8, 13, 12, 0.34);
+    }
+
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 22px; }
+    h2 { font-size: 17px; }
+    h3 { font-size: 14px; }
+
+    .subtle {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+      line-height: 1.45;
+    }
+
+    .section-title {
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin: 18px 0 10px;
+    }
+
+    .source-card, .host-card, .notice {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(13, 20, 18, 0.78);
+      padding: 14px;
+    }
+
+    .source-card {
+      margin-bottom: 10px;
+      cursor: default;
+    }
+
+    .source-card.active {
+      border-color: rgba(118, 212, 155, 0.72);
+      box-shadow: inset 0 0 0 1px rgba(118, 212, 155, 0.14);
+    }
+
+    .source-path {
+      margin-top: 8px;
+      color: var(--muted);
+      font-family: Consolas, "Cascadia Mono", monospace;
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn {
+      border: 1px solid rgba(118, 212, 155, 0.28);
+      border-radius: 12px;
+      background: rgba(118, 212, 155, 0.08);
+      color: var(--text);
+      padding: 8px 12px;
+      font: inherit;
+      font-size: 13px;
+    }
+
+    .btn.primary {
+      border-color: rgba(118, 212, 155, 0.58);
+      background: linear-gradient(135deg, rgba(118, 212, 155, 0.32), rgba(37, 119, 77, 0.5));
+    }
+
+    .btn.warn {
+      border-color: rgba(227, 189, 101, 0.48);
+      color: var(--amber);
+      background: rgba(227, 189, 101, 0.08);
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .host-card.selected {
+      border-color: rgba(118, 212, 155, 0.76);
+    }
+
+    .host-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 8px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .pill.ok { color: var(--green); border-color: rgba(118, 212, 155, 0.42); }
+    .pill.warn { color: var(--amber); border-color: rgba(227, 189, 101, 0.45); }
+    .pill.bad { color: var(--red); border-color: rgba(225, 125, 125, 0.45); }
+    .pill.blue { color: var(--blue); border-color: rgba(131, 186, 255, 0.42); }
+
+    .kv {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      gap: 8px;
+      margin: 12px 0 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .kv strong {
+      color: var(--text);
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(7, 12, 11, 0.84);
+      color: var(--text);
+      padding: 10px 11px;
+      font: inherit;
+      font-size: 13px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 106px;
+      resize: vertical;
+      font-family: Consolas, "Cascadia Mono", monospace;
+    }
+
+    .notice {
+      border-style: dashed;
+      color: var(--muted);
+      line-height: 1.45;
+      margin-top: 16px;
+    }
+
+    .raw {
+      margin-top: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+      background: rgba(4, 8, 7, 0.72);
+      color: #cfe3dc;
+      font-family: Consolas, "Cascadia Mono", monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+    }
+
+    @media (max-width: 1100px) {
+      .shell { grid-template-columns: 1fr; }
+      .editor { border: 0; border-top: 1px solid var(--line); }
+      .cards { grid-template-columns: 1fr; }
+      .toolbar { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark"></div>
+        <div>
+          <div>oo-win-config</div>
+          <p class="subtle">Dedicated SSH Config tab demo</p>
+        </div>
+      </div>
+      <nav class="tabs">
+        <div class="tab">Backup</div>
+        <div class="tab">Remote</div>
+        <div class="tab active">SSH Config</div>
+        <div class="tab">Settings</div>
+      </nav>
+    </header>
+
+    <section class="shell">
+      <section class="main">
+        <div class="toolbar">
+          <div>
+            <h1>SSH Config</h1>
+            <p class="subtle">Manage Host blocks from the selected SSH config source.</p>
+          </div>
+          <div class="button-row">
+            <select style="width:260px">
+              <option>Default - C:\Users\User\.ssh\config</option>
+              <option>Work - D:\ssh\work.config</option>
+              <option>Lab - D:\lab\ssh_config</option>
+            </select>
+            <button class="btn">Add source</button>
+            <button class="btn">Reload</button>
+            <button class="btn">Open file</button>
+            <button class="btn warn">Backup config</button>
+            <button class="btn primary">Save all</button>
+          </div>
+        </div>
+
+        <div class="notice" style="margin-bottom:16px">
+          Selected source: C:\Users\User\.ssh\config. Include directives and global directives are shown read-only; add included files as separate dropdown sources when you want to edit them.
+        </div>
+
+        <div class="cards">
+          <article class="host-card selected">
+            <div class="host-head">
+              <div>
+                <h2>kali-dev</h2>
+                <p class="subtle">HostName 192.168.1.20</p>
+              </div>
+              <span class="pill ok">clean</span>
+            </div>
+            <div class="kv">
+              <span>User</span><strong>curtyuan</strong>
+              <span>Port</span><strong>22</strong>
+              <span>IdentityFile</span><strong>~/.ssh/id_ed25519</strong>
+              <span>ProxyJump</span><strong>none</strong>
+            </div>
+            <div class="status-line">
+              <span class="pill ok">key exists</span>
+              <span class="pill blue">test passed</span>
+              <span class="pill">4 directives</span>
+            </div>
+            <div class="button-row">
+              <button class="btn primary">Edit</button>
+              <button class="btn">Test SSH</button>
+              <button class="btn">Duplicate</button>
+              <button class="btn">Mark delete</button>
+            </div>
+          </article>
+
+          <article class="host-card">
+            <div class="host-head">
+              <div>
+                <h2>win-lab</h2>
+                <p class="subtle">HostName 10.0.0.42</p>
+              </div>
+              <span class="pill warn">pending delete</span>
+            </div>
+            <div class="kv">
+              <span>User</span><strong>Administrator</strong>
+              <span>Port</span><strong>22</strong>
+              <span>IdentityFile</span><strong>~/.ssh/win_lab</strong>
+              <span>ProxyJump</span><strong>office-gateway</strong>
+            </div>
+            <div class="status-line">
+              <span class="pill bad">key missing</span>
+              <span class="pill warn">will delete on Save all</span>
+              <span class="pill">6 directives</span>
+            </div>
+            <div class="button-row">
+              <button class="btn warn">Undo delete</button>
+              <button class="btn">Edit</button>
+              <button class="btn">Test SSH</button>
+            </div>
+          </article>
+
+          <article class="host-card">
+            <div class="host-head">
+              <div>
+                <h2>prod-bastion</h2>
+                <p class="subtle">HostName bastion.example.com</p>
+              </div>
+              <span class="pill ok">clean</span>
+            </div>
+            <div class="kv">
+              <span>User</span><strong>deploy</strong>
+              <span>Port</span><strong>22022</strong>
+              <span>IdentityFile</span><strong>~/.ssh/prod_ed25519</strong>
+              <span>ProxyJump</span><strong>none</strong>
+            </div>
+            <div class="status-line">
+              <span class="pill ok">unknown directives preserved</span>
+              <span class="pill">8 directives</span>
+            </div>
+            <div class="button-row">
+              <button class="btn primary">Edit</button>
+              <button class="btn">Test SSH</button>
+              <button class="btn">Duplicate</button>
+              <button class="btn">Mark delete</button>
+            </div>
+          </article>
+
+          <article class="host-card">
+            <div class="host-head">
+              <div>
+                <h2>New Host</h2>
+                <p class="subtle">Create a new Host block in the selected file.</p>
+              </div>
+              <span class="pill blue">new</span>
+            </div>
+            <div class="notice" style="margin:0 0 14px">
+              This adds a card to the selected config source only. It does not create a remote backup profile.
+            </div>
+            <button class="btn primary">New SSH host</button>
+          </article>
+        </div>
+
+        <div class="raw">Host kali-dev
+  HostName 192.168.1.20
+  User curtyuan
+  Port 22
+  IdentityFile ~/.ssh/id_ed25519</div>
+
+        <div class="cards" style="margin-top:14px">
+          <article class="host-card">
+            <div class="host-head">
+              <div>
+                <h2>Source includes</h2>
+                <p class="subtle">Read-only in first pass.</p>
+              </div>
+              <span class="pill blue">detected</span>
+            </div>
+            <div class="raw">Include D:/ssh/work/*.config
+Include ~/.ssh/conf.d/*.conf</div>
+          </article>
+
+          <article class="host-card">
+            <div class="host-head">
+              <div>
+                <h2>Global directives</h2>
+                <p class="subtle">Preserved when Host cards are saved.</p>
+              </div>
+              <span class="pill">read-only</span>
+            </div>
+            <div class="raw">ServerAliveInterval 30
+AddKeysToAgent yes</div>
+          </article>
+        </div>
+      </section>
+
+      <aside class="editor">
+        <h2>Edit Host card</h2>
+        <p class="subtle">This panel writes back to the selected SSH config file.</p>
+
+        <div class="section-title">Common Directives</div>
+        <label>Host alias<input value="kali-dev"></label>
+        <label>HostName<input value="192.168.1.20"></label>
+        <label>User<input value="curtyuan"></label>
+        <label>Port<input value="22"></label>
+        <label>IdentityFile<input value="~/.ssh/id_ed25519"></label>
+        <label>ProxyJump<input placeholder="optional"></label>
+        <label>ForwardAgent<select><option>no</option><option>yes</option></select></label>
+        <label>StrictHostKeyChecking<select><option>ask</option><option>yes</option><option>no</option></select></label>
+
+        <div class="section-title">Advanced Preserved Directives</div>
+        <label>Raw directives<textarea>ServerAliveInterval 30
+Compression yes</textarea></label>
+
+        <div class="button-row">
+          <button class="btn primary">Save card</button>
+          <button class="btn">Test SSH</button>
+          <button class="btn">Discard</button>
+        </div>
+
+        <div class="notice">
+          Remote files, software profiles, collect, restore, baseline, snapshot map, and trash are intentionally absent from this tab.
+        </div>
+      </aside>
+    </section>
+  </main>
+</body>
+</html>
